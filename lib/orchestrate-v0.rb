@@ -9,7 +9,7 @@ module NoDB
 		
 		def initialize(orch_config={})
 			@base_url = orch_config['base-url']  # https://api.orchestrate.io/v0
-			@user     = orch_config[:user]      # <user-key-from-orchestrate.io>
+			@user     = orch_config[:user]       # <user-key-from-orchestrate.io>
 			@verbose  = orch_config[:verbose] if orch_config[:verbose]
 		end
 
@@ -54,6 +54,9 @@ module NoDB
 		# ===================================================================================
 		#  Public routines to perform basic Orchestrate actions
 
+		# ===================================================================
+		#  collection
+
 		# -------------------------------------------------------------------
 		#  Name: query
 		#  Desc: query the collection
@@ -94,6 +97,9 @@ module NoDB
 			do_the_delete_call( url: api_url )
 		end
 
+		# ===================================================================
+		#  collection/key
+
 		# -------------------------------------------------------------------
 		#  Name: get_key
 		#  Desc: return specified 'row' of data (key)
@@ -123,6 +129,9 @@ module NoDB
 			api_url = "#{@base_url}/#{args[:collection]}/#{args[:key]}"
 			do_the_delete_call( url: api_url )
 		end
+
+		# ===================================================================
+		#  collection/key/events
 
 		# -------------------------------------------------------------------
 		#  Name: get_events
@@ -154,6 +163,9 @@ module NoDB
 			do_the_delete_call( url: api_url )
 		end
 
+		# ===================================================================
+		#  collection/key/relation(s)
+
 		# -------------------------------------------------------------------
 		#  Name: get_relations
 		#  Desc: return requested relations from specified key
@@ -164,16 +176,16 @@ module NoDB
 			do_the_get_call( url: api_url )
 		end
 
-		# # -------------------------------------------------------------------
-		# #  Name: get_relation
-		# #  Desc: return requested relation from specified key
-		# #  Args: collection, key, relation
-		# # -------------------------------------------------------------------
-		# def get_relation(args)
-		# 	api_url = "#{@base_url}/#{args[:collection_A]}/#{args[:key_A]}/relations/#{args[:relation]}" +
-		# 												 "#{args[:collection_B]}/#{args[:key_B]}"
-		# 	do_the_get_call( url: api_url )
-		# end
+		# -------------------------------------------------------------------
+		#  Name: get_relation
+		#  Desc: return requested relation from specified key (patterned after PUT)
+		#  Args: collection, key, relation
+		# -------------------------------------------------------------------
+		def get_relation(args)
+			api_url = "#{@base_url}/#{args[:collection_A]}/#{args[:key_A]}/relation/#{args[:relation]}" +
+													 	 "#{args[:collection_B]}/#{args[:key_B]}"
+			do_the_get_call( url: api_url )
+		end
 
 		# -------------------------------------------------------------------
 		#  Name: put_relation
@@ -188,18 +200,18 @@ module NoDB
 
 		# -------------------------------------------------------------------
 		#  Name: delete_relations
-		#  Desc: delete specified relations (all) from specified key
+		#  Desc: delete specified relations (all) from specified key (patterned after GET)
 		#  Args: collection, key, relation
 		# -------------------------------------------------------------------
 		def delete_relations(args)
-			api_url = "#{@base_url}/#{args[:collection_A]}/#{args[:key_A]}/relation/" +
+			api_url = "#{@base_url}/#{args[:collection_A]}/#{args[:key_A]}/relations/" +
 			                       "#{args[:relation]}"
 			do_the_delete_call( url: api_url )
 		end
 
 		# -------------------------------------------------------------------
 		#  Name: delete_relation
-		#  Desc: delete specified relations from specified key
+		#  Desc: delete specified relations from specified key (patterned after PUT)
 		#  Args: collection, key, relation
 		# -------------------------------------------------------------------
 		def delete_relation(args)
